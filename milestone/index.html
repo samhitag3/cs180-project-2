@@ -1,0 +1,70 @@
+<html>
+	<head>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+		<style>
+			h1 {
+				text-align: center;
+			}
+
+			.container {
+				margin: 0 auto;
+				padding: 60px 20%;
+			}
+
+			figure {
+				text-align: center;
+			}
+
+			img {
+				display: inline-block;
+			}
+
+			body {
+				font-family: 'Inter', sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+		<h1>CS184 Milestone Webpage</h1>
+		<div style="text-align: center;">Names: Samhita Ghosh, Christian F Roque-Ayala, Ruizhang Xu, Jack Zhang</div>
+		<br>
+
+		Link to slides: <a href="https://docs.google.com/presentation/d/1dPuWYfFT6pP90Zr5hpX1pjZ9wpp106BLvQ2HPjFQaJM/edit?usp=drive_link">docs.google.com/presentation/d/1dPuWYfFT6pP90Zr5hpX1pjZ9wpp106BLvQ2HPjFQaJM</a>
+		
+		<br>
+
+		Link to video: <a href="https://drive.google.com/file/d/153Am14B40W1V20Zoxzon-ABWS_CVMT4x/view?usp=drive_link">drive.google.com/file/d/153Am14B40W1V20Zoxzon-ABWS_CVMT4x</a>
+
+		<!--
+		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
+		-->
+
+		<h2>Accomplishments</h2>
+		<p>
+Upon a thorough review of our proposal feedback in a group meeting, we have reviewed existing literature and online resources on water/fluid simulation extensively to explore different simulation methods by understanding the underlying maths. Throughout several more group meetings in the past two weeks, we discussed our individual findings as well as listed out the pros and cons of different simulation methods(Grid, SPH Particle, or FLIP Hybrid) under various dev environment(Unity with C# or OpenGL with C++). After running a few small demos with more in-depth discussion, we finalized the dev environment in Unity and C# and FLIP as our fluid simulation method. 
+
+Hence, we implemented a working demo of a basic 2D fluid simulation using the FLIP method through Unity and C#. Our most recent update is that we have started testing out some potential interactivity functions(i.e. creating waves via keyboard hotkey) to simulate the Tsunami effect!
+		</p>
+
+		<h2>Preliminary Results</h2>
+		<p>As noted in the section above, our team was able to build a working version of a fluid simulation method using FLIP. Some noted successes are how the particles are colliding when they fall, and also the initial "wave" effect we see when they fall. Some spots we need to consider for improvement are how the particles do not stay constrained within the bounding rectangle after colliding, which reduces the volume of the water. Separately, we have tested a wave effect script and our hope is to integrate that function with our current simulation to increase that wave effect to simulate a tsunami</p>
+
+		<h2>Reflection</h2>
+		<p>
+			Getting started on this project proved to be challenging. Since we chose Unity as our development platform, our first hurdle was our limited familiarity with C#. We also needed to standardize on a specific Unity Editor version and learn its interface, which raised the entry barrier considerably. On top of that, Unity is a heavyweight application: our project quickly accumulated numerous packages and dependencies, making debugging difficult and synchronization across each team member’s machine a constant struggle. These complexities, combined with Unity’s demanding performance requirements, led to frequent stutters and frame drops in our early prototypes due to a lack of optimization.
+Despite these obstacles, we tackled them head‑on through regular in‑person team discussions. By working together to resolve version control issues and share Unity setup tips, we smoothed out our onboarding process and set a solid foundation for the project. During the initial demo phase, each member independently implemented a basic 2D fluid simulation; we then compared our approaches, adopted the strongest ideas from each implementation, and refined our code accordingly. As a result, we successfully produced a smoothly running 2D water simulation demo—an encouraging milestone that demonstrates our ability to overcome technical challenges and collaborate effectively.
+. 
+		</p>
+
+		<h2>Changes to Original Plan</h2>
+		<p>
+In our original proposal, we stated that we were hoping to turn in a 3D simulator as the milestone. However, since we wanted to make sure we used the tools and resources that were most tailored to our overall goals, we decided to spend more time on research and setup before we started implementing any sort of simulation, and thus have turned in a 2D simulation instead. This will not hugely impact the rest of our timeline; as we have observed in some of the resources we’ve used to help us implement the 2D simulation, adding a third dimension only involves modifying our existing code to support it rather than starting over completely from scratch. As such, the timeline for the last 2 weeks of the project stays mostly the same, with the only other goal for week 3 (4/20 - 4/27) being to get the 3D simulation working in addition to polishing the rendering and adding our desired interactivity. 
+</p>
+		<h2>Resources</h2>
+FLIP fluid simulation: <a href="https://www.youtube.com/watch?v=XmzBREkK8kY">youtube.com/watch?v=XmzBREkK8kY</a>
+		
+		</div>
+	</body>
+</html>
