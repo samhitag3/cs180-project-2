@@ -27,7 +27,7 @@
 	</head>
 	<body>
 		<div class="container">
-		<h1>CS184 Final Deliverable Webpage</h1>
+		<h1 style="text-align: center;">CS184 Final Deliverable Webpage</h1>
 		<div style="text-align: center;">Names: Samhita Ghosh, Christian F Roque-Ayala, Ruizhang Xu, Jack Zhang</div>
 		<br>
 
@@ -39,7 +39,7 @@
 		
 		<br>
 
-		Link to video: <a href="ADD LINK">ADD LINK</a>
+		Link to video: <a href="https://drive.google.com/file/d/1jiOLYfablzx_EB0THsDXvMlpTlODMNn-/view?t=1">drive.google.com/file/d/1jiOLYfablzx_EB0THsDXvMlpTlODMNn-</a>
 
 		<!--
 		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
@@ -49,17 +49,17 @@
 			<img src="meme.png" alt="LOL :P" style="width:100%"/>
 		</figure>
 
-		<h2>Abstract</h2>
+		<h2 style="text-align: center;">Abstract</h2>
 		<p>
             Leveraging a hybrid FLIP (Fluid‐Implicit Particle) approach, we developed a real‐time tsunami simulator in Unity that combines a particle‐based simulation with a grid‐based one. Beginning with a 2D prototype, we implemented the full FLIP pipeline—particle‐to‐grid transfer, pressure projection, grid‐to‐particle velocity updates, and collision handling—then generalized it to 3D using trilinear interpolation and spatial hashing. To overcome performance bottlenecks at high particle counts, we ported our computations to GPU compute shaders, achieving an order‐of‐magnitude speedup while retaining physical accuracy. A custom URP shader adds dynamic water shading with Fresnel highlights and depth‐based coloration, and interactive controls allow users to trigger tsunami‐like wave events and manipulate scene geometry in real time.
 		</p>
 
-        <h2>Technical Approach</h2>
+        <h2 style="text-align: center;">Technical Approach</h2>
 		<p>
             As detailed in our Milestone report, we conducted an in-depth review of existing literature and online resources on fluid simulation, focusing on the mathematical foundations of various methods. Over the first two weeks, we held several technical discussions to evaluate Grid (Position)-based, SPH (Particle-based), and FLIP approaches, assessing their strengths and limitations within different development environments (Unity with C# vs. OpenGL with C++). We went with Unity with C# as our development platform for the interactivity appeal and adopted the FLIP method for its balance of stability, realism, and computational efficiency. 
 		</p>
 
-        <h2>Basic FLIP Overview</h2>
+        <h2 style="text-align: center;">Basic FLIP Overview</h2>
 		<p>
             Fluid Implicit Particle (FLIP) combines particle-based and grid-based techniques, transferring velocity data between particles and a background grid to simulate fluid motion. This hybrid approach reduces numerical dissipation and improves stability, making it well-suited for capturing realistic, high-energy fluid dynamics.
 		</p>
@@ -74,7 +74,7 @@
             </ol>
 		</p>
 
-        <h2>Our Workflow</h2>
+        <h2 style="text-align: center;">Our Workflow</h2>
 
         <p>
             To simulate real-world fluids, we first created a working FLIP demo in 2D and then implemented the full FLIP pipeline in 3D. Then, we re-architected the implementation in 3D through GPU-accelerated computation. Lastly, we created shaders and added interactivity through hotkeys for better visual results in the real-world simulation. 
@@ -146,19 +146,22 @@
 		<p>
             <u>Tsunami Simulation</u>: on top of our 3D FLIP framework, we simulate tsunami-like waves by designing a sloped fluid domain that physically channels gravity-induced motion into horizontal flow. We accomplish this by dynamically adjusting the simulation box geometry and applying directional force shaping through particle placement and boundary slope definition, which was rendered and passed to the compute shader. This technique imitates real-world tsunami dynamics where fluid accelerates from a raised region into a flat domain. 
 		</p>
+
+        <h2 style="text-align: center;">Future Steps</h3>
         <p>
-            <u>Objects Interactions</u>: [INSERT]
-		</p>
+            One of the interactivity features we wanted to support in our simulation that time did not permit 
+            was realistic handling of object-particle collisions. This would have involved using the Unity engine’s collider API to have the tsunami interact with a variety of objects ranging from simple 3D shapes to more complex meshes such as ship models. The approach that we tried using to get this working on the GPU accelerated code was to collect all the colliders for each mesh in the scene and packing them into a buffer that would then be used by the compute shader’s particle collision kernel to push all particles out of the object and reflect any velocity. We had drafted out code for supporting this functionality, but we were unable to get it to a working state in time and decided to prioritize the visual aspect of the simulation. If time were not an issue, this would be a clear candidate for further development.
+        </p>
 
 
-        <h2>Lessons Learned</h3>
+        <h2 style="text-align: center;">Lessons Learned</h3>
 		<ul>
             <li>FLIP simulation pipeline</li>
             <li>How to accelerate calculation by moving from CPU to GPU using Unity and C#</li>
             <li>How to create different shaders and interactivity functions within Unity</li>
         </ul>
 
-        <h2>Results</h3>
+        <h2 style="text-align: center;">Results</h3>
 
         <figure style="width:100%; margin:0;">
             <video style="width: 100%; height: auto;" autoplay muted>
@@ -200,27 +203,19 @@
             </figcaption>
         </figure> <br>
 
-        <figure style="width:100%; margin:0;">
-            <video style="width: 100%; height: auto;" autoplay muted>
-                <source src="3D-Interactive.mov" type="video/mp4">
-                <!-- [INSERT VIDEO] -->
-                Your browser does not support the video tag.
-            </video>
-            <figcaption style="text-align:center; font-size:0.9em; color:#555;">
-                <a href="https://drive.google.com/file/d/1ssMfHNiEPBd8OYxHPWk4Z8bbMDJ1hCgp/view">GPU-Accelerated 3D Simulation with Interactivity</a>
-            </figcaption>
-        </figure>
-
-        <h2>References</h3>
+        <h2 style="text-align: center;">References</h3>
         <ol>
             <li><a href="https://www.youtube.com/watch?v=kOkfC5fLfgE&themeRefresh=1">Coding Adventure: Rendering Fluids</a></li>
             <li><a href="https://matthias-research.github.io/pages/tenMinutePhysics/18-flip.pdf">FLIP Explanations</a></li>
+            <li><a href="https://www.youtube.com/watch?v=-0m05gzk8nk">2D SPH Fluid Simulation in Python</a></li>
+            <li><a href="https://mmacklin.com/pbf_sig_preprint.pdf">Position-based Simulation</a></li>
         </ol>
-        <h2>Contributions from each member</h3>
-        <p><strong>Samhita Ghosh:</strong> 2D FLIP Simulation, shader for 3D FLIP simulation (GPU), webpage compilation</p>
-        <p><strong>Christian F Roque-Ayala:</strong></p>
-        <p><strong>Ruizhang Xu:</strong> 3D FLIP (CPU), conversion of simulation from CPU to GPU</p>
-        <p><strong>Jack Zhang:</strong> 3D FLIP (CPU), conversion of simulation from CPU to GPU</p>
+        <h2 style="text-align: center;">Contributions from each member</h3>
+        <p><strong>Samhita Ghosh:</strong> Implemented 2D FLIP Simulation, developed the shader for 3D FLIP simulation (GPU), created multiple slides and drafted web page writeup</p>
+        <p><strong>Christian F Roque-Ayala:</strong> Explored and tested shader and interactivity.</p>
+        <p><strong>Ruizhang Xu:</strong> Extended the 2D FLIP Simulation into 3D FLIP Simulation (CPU), implemented GPU-accelerated 3D simulation, developed the tsunami simulation and recorded demo videos for presentation
+        </p>
+        <p><strong>Jack Zhang:</strong> Developed interactivity with 2D FLIP simulation, helped with 3D FLIP (CPU) and GPU-acceleration, resolved particle-collision problem, drafted the technical writeup for the web page and created multiple slides</p>
 		</div>
 	</body>
 </html>
