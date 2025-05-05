@@ -94,11 +94,25 @@
             A more thorough FLIP pipeline that we implemented is detailed as follows: 
 		</p>
         <ol>
-            <li><strong></strong></li>
-            <li><strong></strong></li>
-            <li><strong></strong></li>
-            <li><strong></strong></li>
-            <li><strong></strong></li>
+            <li><strong>P2G Transfer:</strong> each particle’s mass and momentum are interpolated to nearby grid nodes using a weight function; thus, for each grid cell, we compute: $$ m_i += w_{ip} \cdot m_p \text{ and } (mv_i) += w_{ip} \cdot m_p \cdot v_p $$ where \( w_{ip} \) is the weight from particle \( p \) to grid node \( \), \( m_p \) is the particle mass, and \( v_p \) is particle velocity.</li>
+            <li><strong>Grid-based Solving:</strong>
+            <ol type="a">
+                <li>Grid Normalization: velocity at each grid node is normalized by mass</li>
+                <li>Force Addition: gravity, viscosity, external forces <br>
+                    <u>Gravity:</u> \( v_0 += g \cdot \Delta t \) <br>
+                    <u>Viscosity (Laplacian-based smoothing):</u> \( v_i -= \Sigma_{j \in N(i)} (v_i - v_j) \)
+                
+                </li>
+                <li>Pressure Projection: ensure incompressibility through computing divergence, solving pressure poisson equation using Jacobi Iteration, and subtract pressure gradient for the final grid velocities. </li>
+            </ol></li>
+            <li><strong>G2P Transfer:</strong> compute new particle velocity from updated grid velocities
+            $$v_{p}^{\text{PIC}} = \Sigma_i w_{ip} y_i $$
+            $$v_{p}^{\text{FLIP}} = v_p^{\text{old}} + \Sigma_i w_{ip} (v_i - v_i^{\text{old}})$$
+            $$v_p = (1 - \alpha) \cdot v_{p}^{\text{PIC}} + \alpha \cdot v_{p}^{\text{FLIP}}$$
+            where \( \alpha = \) <code>flipPicBlend</code> \( \in [0, 1] \)
+            </li>
+            <li><strong>Particle Advection:</strong> Move particles through the velocity field using forward Euler integration(with small timesteps)</li>
+            <li><strong>Collision Handling:</strong></li>
         </ol>
 
         <h3>1 - 2D FLIP Simulation</h3>
