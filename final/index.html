@@ -1,0 +1,117 @@
+<html>
+	<head>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+		<style>
+			h1 {
+				text-align: center;
+			}
+
+			.container {
+				margin: 0 auto;
+				padding: 60px 20%;
+			}
+
+			figure {
+				text-align: center;
+			}
+
+			img {
+				display: inline-block;
+			}
+
+			body {
+				font-family: 'Inter', sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+		<h1>CS184 Final Deliverable Webpage</h1>
+		<div style="text-align: center;">Names: Samhita Ghosh, Christian F Roque-Ayala, Ruizhang Xu, Jack Zhang</div>
+		<br>
+
+		Link to webpage: <a href="https://samhitag3.github.io/cs184-final-project/final/index.html">samhitag3.github.io/cs184-final-project/final</a>
+			
+		<br>
+
+		Link to slides: <a href="https://docs.google.com/presentation/d/1P5RPIPzK-IlkIUeiaXLd-yI-AUDdkWg5OA193g2luus/edit#slide=id.g354ba66eaaf_2_0">docs.google.com/presentation/d/1P5RPIPzK-IlkIUeiaXLd-yI-AUDdkWg5OA193g2luus</a>
+		
+		<br>
+
+		Link to video: <a href="ADD LINK">ADD LINK</a>
+
+		<!--
+		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
+		-->
+
+		<h2>Abstract</h2>
+		<p>
+            [INSERT]
+		</p>
+
+        <h2>Technical Approach</h2>
+		<p>
+            As detailed in our Milestone report, we conducted an in-depth review of existing literature and online resources on fluid simulation, focusing on the mathematical foundations of various methods. Over the first two weeks, we held several technical discussions to evaluate Grid (Position)-based, SPH (Particle-based), and FLIP approaches, assessing their strengths and limitations within different development environments (Unity with C# vs. OpenGL with C++). We went with Unity with C# as our development platform for the interactivity appeal and adopted the FLIP method for its balance of stability, realism, and computational efficiency. 
+		</p>
+
+        <h2>Basic FLIP Overview</h2>
+		<p>
+            Fluid Implicit Particle (FLIP) combines particle-based and grid-based techniques, transferring velocity data between particles and a background grid to simulate fluid motion. This hybrid approach reduces numerical dissipation and improves stability, making it well-suited for capturing realistic, high-energy fluid dynamics.
+		</p>
+        <p>
+            In a basic FLIP simulation, the core pipeline typically includes the following steps: 
+            <ol>
+                <li><strong>Particle-to-Grid Transfer (P2G):</strong> Transfer particle velocities and masses to the background grid using interpolation weights.</li>
+                <li><strong>Grid-Based Solving:</strong> Solve fluid dynamics equations–applying external forces like gravity and enforcing incompressibility via pressure projection–on the grid.</li>
+                <li><strong>Grid-to-Particle Transfer (G2P):</strong> Update particle velocities by interpolating the change in grid velocities back to the particles using PIC/FLIP Blend.</li>
+                <li><strong>Particle Advection:</strong> Move particles through the velocity field using time integration. </li>
+                <li><strong>Collision Handling:</strong> Enforce boundary conditions and resolve collisions with solids or domain boundaries</li>
+            </ol>
+		</p>
+
+        <h2>Our Workflow</h2>
+
+        <p>
+            To simulate real-world fluids, we first created a working FLIP demo in 2D and then implemented the full FLIP pipeline in 3D. Then, we re-architected the implementation in 3D through GPU-accelerated computation. Lastly, we created shaders and added interactivity through hotkeys for better visual results in the real-world simulation. 
+		</p>
+
+        <h3>1. 2D FLIP Simulation</h3>
+		<p>
+            As a foundational step toward developing our 3D tsunami simulator, our first step was to create a 2D simulation designed for extensibility. Not only did we implement the core FLIP pipeline, we explored various possibilities for better rendering and simulation outputs towards our project goal, including: 
+		</p>
+        <ul>
+            <li>A GPU-instanced renderer that uses transformation matrices and per-particle colors for aesthetic clarity</li>
+            <li>A Runtime scene controller that enables dynamic switching between tank, wind tunnel, and paint scenes with adjustable parameters like FLIP ratio and drift compensation</li>
+            <li>An interactive hotkey that triggers to simulate large-scale wave events, such as tsunami movement, by applying directional forces</li>
+		</ul>
+
+        <h3>2. 3D FLIP Simulation</h3>
+		<p>
+            With our working 2D demo, we extended it to 3D by generalizing the core particle-grid pipeline across all three spatial dimensions, adding an additional Z-component for particle positions and W-component for velocity storage and transfer. This process also involved transitioning from bilinear to trilinear interpolation for both P2G and G2P transfers and expanding the pressure projection solver to handle six neighbors in 3D space. Lastly, we updated the 3D spatial partitioning for handling the particle-particle collision resolution using hashing. These changes preserved the physical accuracy and performance optimization of our original 2D implementation while enabling realistic fluid behavior in the 3D scenarios. 
+		</p>
+        <p>
+            A more thorough FLIP pipeline that we implemented is detailed as follows: 
+		</p>
+        <ol>
+            <li><strong></strong></li>
+            <li><strong></strong></li>
+            <li><strong></strong></li>
+            <li><strong></strong></li>
+            <li><strong></strong></li>
+        </ol>
+
+        <h3>1 - 2D FLIP Simulation</h3>
+		<p>
+            inset
+		</p>
+
+
+		
+
+		<h2>Resources</h2>
+FLIP fluid simulation: <a href="https://www.youtube.com/watch?v=XmzBREkK8kY">youtube.com/watch?v=XmzBREkK8kY</a>
+		
+		</div>
+	</body>
+</html>
