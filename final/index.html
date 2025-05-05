@@ -99,8 +99,8 @@
             <ol type="a">
                 <li>Grid Normalization: velocity at each grid node is normalized by mass</li>
                 <li>Force Addition: gravity, viscosity, external forces <br>
-                    <u>Gravity:</u> \( v_0 += g \cdot \Delta t \) <br>
-                    <u>Viscosity (Laplacian-based smoothing):</u> \( v_i -= \Sigma_{j \in N(i)} (v_i - v_j) \)
+                    <u>Gravity</u>: \( v_0 += g \cdot \Delta t \) <br>
+                    <u>Viscosity (Laplacian-based smoothing)</u>: \( v_i -= \Sigma_{j \in N(i)} (v_i - v_j) \)
                 
                 </li>
                 <li>Pressure Projection: ensure incompressibility through computing divergence, solving pressure poisson equation using Jacobi Iteration, and subtract pressure gradient for the final grid velocities. </li>
@@ -111,21 +111,99 @@
             $$v_p = (1 - \alpha) \cdot v_{p}^{\text{PIC}} + \alpha \cdot v_{p}^{\text{FLIP}}$$
             where \( \alpha = \) <code>flipPicBlend</code> \( \in [0, 1] \)
             </li>
-            <li><strong>Particle Advection:</strong> Move particles through the velocity field using forward Euler integration(with small timesteps)</li>
-            <li><strong>Collision Handling:</strong></li>
+            <li><strong>Particle Advection:</strong> Move particles through the velocity field using forward Euler integration(with small timesteps) $$x_p += v_p \cdot \Delta t$$</li>
+            <li><strong>Collision Handling:</strong> check proximity to boundaries and other particles using spatial hashing; if penetration or overlap is detected, apply repulsive force proportional to overlap and apply velocity damping with the following: $$v_\text{new} = -\text{damping} \cdot v_\text{normal}$$</li>
         </ol>
 
-        <h3>1 - 2D FLIP Simulation</h3>
+        <h3>3. GPU-Acceleration</h3>
 		<p>
-            inset
+            During our transition from 2D to 3D FLIP simulation, we encountered significant computing efficiency bottlenecks: as the number of particles increases, we see a drastic increase in lagging and reduction in FPS with our simulation visuals–the computational cost scaled nonlinearly with particle count. Through some trial and error, we figured out that all of our computation logics ran on the CPU, which is only optimized for low-latency sequential tasks. To address this, we rebuilt the FLIP pipeline by switching our computation from the CPU to the GPU, which improved our efficiency by leveraging the GPU’s massively parallel architecture that can perform per-particle and grid-based operations simultaneously. As a result, this shift to GPU-accelerated computation substantially improved our performance and scalability through reducing computation time for large-scale simulations. 
+		</p>
+
+        <h3>4. Shader</h3>
+		<p>
+            [INSERT]
+		</p>
+
+        <h3>5. Interactivity</h3>
+		<p>
+            <u>Tsunami Simulation</u>: on top of our 3D FLIP framework, we simulate tsunami-like waves by designing a sloped fluid domain that physically channels gravity-induced motion into horizontal flow. We accomplish this by dynamically adjusting the simulation box geometry and applying directional force shaping through particle placement and boundary slope definition, which was rendered and passed to the compute shader. This technique imitates real-world tsunami dynamics where fluid accelerates from a raised region into a flat domain. 
+		</p>
+        <p>
+            <u>Objects Interactions</u>: [INSERT]
 		</p>
 
 
-		
+        <h2>Lessons Learned</h3>
+		<ul>
+            <li>FLIP simulation pipeline</li>
+            <li>How to accelerate calculation by moving from CPU to GPU using Unity and C#</li>
+            <li>How to create different shaders and interactivity functions within Unity</li>
+        </ul>
 
-		<h2>Resources</h2>
-FLIP fluid simulation: <a href="https://www.youtube.com/watch?v=XmzBREkK8kY">youtube.com/watch?v=XmzBREkK8kY</a>
-		
+        <h2>Results</h3>
+
+        <figure style="width:100%; margin:0;">
+            <video style="width: 100%; height: auto;" autoplay muted>
+                <source src="2D-FLIP.mov" type="video/mp4">
+                Your browser does not support the video tag. [INSERT] download link add caption and adjust width
+            </video>
+            <figcaption style="text-align:center; font-size:0.9em; color:#555;">
+                2D FLIP Simulation
+            </figcaption>
+        </figure> <br>
+
+        <figure style="width:100%; margin:0;">
+            <video style="width: 100%; height: auto;" autoplay muted>
+                <source src="2D-Interactive.mov" type="video/mp4">
+                Your browser does not support the video tag. [INSERT] download link add caption and adjust width
+            </video>
+            <figcaption style="text-align:center; font-size:0.9em; color:#555;">
+                2D FLIP Simulation with Interactivity
+            </figcaption>
+        </figure> <br>
+
+        <figure style="width:100%; margin:0;">
+            <video style="width: 100%; height: auto;" autoplay muted>
+                <source src="3D-CPU.mov" type="video/mp4">
+                Your browser does not support the video tag. [INSERT] download link add caption and adjust width
+            </video>
+            <figcaption style="text-align:center; font-size:0.9em; color:#555;">
+                3D FLIP Simulation (CPU)
+            </figcaption>
+        </figure> <br>
+
+        <figure style="width:100%; margin:0;">
+            <video style="width: 100%; height: auto;" autoplay muted>
+                <source src="3D-GPU.mp4" type="video/mp4">
+                Your browser does not support the video tag. [INSERT] download link add caption and adjust width
+            </video>
+            <figcaption style="text-align:center; font-size:0.9em; color:#555;">
+                3D FLIP Simulation (GPU-Accelerated)
+            </figcaption>
+        </figure> <br>
+
+        <figure style="width:100%; margin:0;">
+            <video style="width: 100%; height: auto;" autoplay muted>
+                <source src="3D-Interactive.mov" type="video/mp4">
+                <!-- [INSERT VIDEO] -->
+                Your browser does not support the video tag. [INSERT] download link add caption and adjust width
+            </video>
+            <figcaption style="text-align:center; font-size:0.9em; color:#555;">
+                GPU-Accelerated 3D Simulation with Interactivity 
+            </figcaption>
+        </figure>
+
+        <h2>References</h3>
+        <p>
+            [INSERT]
+        </p>
+
+        <h2>Contributions from each member</h3>
+        <p><strong>Samhita Ghosh:</strong> 2D FLIP Simulation, shader for 3D FLIP simulation (GPU), webpage compilation</p>
+        <p><strong>Christian F Roque-Ayala:</strong></p>
+        <p><strong>Ruizhang Xu:</strong> 3D FLIP (CPU), conversion of simulation from CPU to GPU</p>
+        <p><strong>Jack Zhang:</strong> 3D FLIP (CPU), conversion of simulation from CPU to GPU</p>
 		</div>
 	</body>
 </html>
