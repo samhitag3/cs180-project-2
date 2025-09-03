@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 	<head>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-	<style>
+		<style>
 			h1 {
 				text-align: center;
 			}
@@ -22,67 +22,79 @@
 
 			body {
 				font-family: 'Inter', sans-serif;
-				line-height: 1.4;
-				color: #32323a;
-				background-color: #ffffff;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-				width: 40%;
-				height: 100%;
-				margin: 0;
-				position: absolute;
-				left: 50%;
-				transform: translateX(-50%);
 			}
-
-		@media (max-width: 600px) {
-			body {
-				width: 100%;
-				left: 0;
-				transform: none;
-			}
-		}
-
-		a {
-			text-decoration: none;
-			color: #0057A8;
-		}
-
-		a:hover {
-			color: #8E018E !important;
-			text-decoration: underline;
-		}
-	</style>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS184/284A Homework Webpages</title>
+		</style>
 	</head>
 	<body>
-		<div class="wrapper">
-			<header>
-				<h1 style="align-self:flex-end;">CS184 Final Project Webpages</h1>
-			</header>
-			<main>
-				<div class="content">
-					<ul>
-						<li><a href="/proposal/index.html">Proposal</a></li>
-						<li><a href="/milestone/index.html">Milestone</a></li>
-						<li><a href="/final/index.html">Final Deliverable</a></li>
-					</ul>
-				</div>
-			</main>
+		<div class="container">
+		<h1>CS184 Spring 2025 Final Project Proposal</h1>
+        <div style="text-align: center;">Title: Tsunami Simulator...?</div>
+		<div style="text-align: center;">Names: Samhita Ghosh, Christian F Roque-Ayala, Ruizhang Xu, Jack Zhang</div>
+
+		<br>
+
+		Link to webpage: <a href="https://samhitag3.github.io/cs184-final-project/proposal/index.html">samhitag3.github.io/cs184-final-project/proposal</a>
+
+        <h2>Summary</h2>
+        Using the concepts of fluid dynamics, our final project seeks to replicate a tsunami or massive flood, emphasizing interactions between water and physical objects. With the use of a realistic physics-based animation, we intend to show how water forces impact variously shaped and weighted objects.
+
+        <h2>Problem Description</h2>
+        The concept of fluid simulation was really interesting to our group and we were trying to brainstorm ways this was relevant to the real world. After playing around with some of the old projects and doing some separate research, we decided on making a flood / tsunami simulation. We would simulate the movement and force of water which would affect the movement of other objects in the scene based on their size, position and density.
+
+        <h2>Goals and Deliverables</h2>
+        <ol>
+            <li>Plan to Deliver</li>
+            <ol>
+                <li>Basic controls - water point of origin, wave force, water level</li>
+                <li>Animation of water movement</li>
+                <ol>
+                    <li>Fluid simulation using an existing computational method (SPH or Eulerian)</li>
+                    <li>Visual effects from water (e.g. water particles)</li>
+                </ol>
+                <li>3D objects and object-water interaction</li>
+            </ol>
+            <li>Hope to Deliver</li>
+            <ol>
+                <li>More interactivity - adding objects in the path of water flow of different shapes, sizes, and densities(customized by user)</li>
+                <li>Realistic rendering - adding refraction, reflection in the 3D fluid simulation</li>
+            </ol>
+        </ol>
+
+        <h2>Schedule</h2>
+        <ul>
+            <li><strong>Week 1(4.4 - 4.11): Set up and Planning</strong></li>
+            <ul>
+                <li>Set up dev environment</li>
+                <li>Read and review papers and tutorials relevant to fluid simulation of different methods</li>
+                <li>Implement a basic 2D fluid simulation</li>
+            </ul>
+            <li><strong>Week 2(4.12 - 4.19): Implementation and Testing</strong></li>
+            <ul>
+                <li>Implement 3D object-water interaction (how fixed object influences water)</li>
+                <li>Add water particles, simple objects</li>
+                <li>Testing/debugging for correctness + benchmarking</li>
+                <li>Record videos of implementation testing and explain our progress in the write-up</li>
+            </ul>
+            <li><strong>Week 3(4.20 - 4.27): Milestone Submission </strong></li>
+            <ul>
+                <li>Submit Milestone write-up/video/slides</li>
+                <li>Polish rendering with better water visuals, objects shading, etc. </li>
+                <li>Set up interactivity (Unity or a different front end for UI)/li>
+            </ul>
+            <li><strong>Week 4(4.27 - 5.4): Project Completion and Record Video Presentation</strong></li>
+            <ul>
+                <li>Finalize simulation scenes</li>
+                <li>Prepare video recording, write-up, and presentation</li>
+            </ul>
+        </ul>
+
+        <h2>Resources</h2>
+        <ul>
+            <li><a href="https://www.youtube.com/watch?v=-0m05gzk8nk">SPH Fluid Simulation in Python</a></li>
+            <li><a href="https://matthias-research.github.io/pages/tenMinutePhysics/17-fluidSim.pdf">Eulerian Fluid Simulator in Javascript</a></li>
+            <li><a href="https://mmacklin.com/pbf_sig_preprint.pdf">Position Based Fluids</a></li>
+            <li><a href="https://matthias-research.github.io/pages/tenMinutePhysics/index.html">Fluid Simulation Physics</a></li>
+        </ul>
 		</div>
 	</body>
-	<script>
-		var links = document.body.getElementsByTagName("a")
-		var a = window.location.href.indexOf(".io")
-		var repo_name = window.location.href.substring(a+3)
-		for(var i = 0; i < links.length; i++){
-			var link = links[i]
-			var actual_name = link.href.substring(link.href.indexOf(".io")+4)
-			link.href = repo_name + actual_name
-		}
-	</script>
 </html>
