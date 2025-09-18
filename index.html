@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CS180 Project 1 — Colorizing the Prokudin-Gorskii Photos</title>
+  <title>CS180 Project 1</title>
   <!-- MathJax for formulas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
   <style>
@@ -27,7 +27,7 @@
 
 <header>
   <h1>Project 1: Colorizing the Prokudin‑Gorskii Photos</h1>
-  <p class="muted">Course: CS180 • Author: <em>Samhita Ghosh</em> • Date: Fall 2025</p>
+  <p class="muted">Course: CS180 • <em>Samhita Ghosh</em> • Fall 2025</p>
 </header>
 
 <main>
@@ -43,9 +43,9 @@
   <section id="data">
     <h2>Image Representation</h2>
     <p>
-      Let \(B, G, R) be the three grayscale channels. We estimate integer displacements
+      Let B, G, R be the three grayscale channels - which I got by splitting the original files into 3. We estimate integer displacements
       \((\Delta x_G, \Delta y_G)\) and \((\Delta x_R, \Delta y_R)\) that align \(G\) and \(R\) to \(B\).
-      The final color image is RGB color image. Conceptually, we want to find what alignment of the plates (the array values) is the most similar for each channel, and that will help us recreate a color effect. That similarity can be determined using different metrics, like the L2 Norm or the NCC.
+      The final color image is RGB color image. Conceptually, we want to find what alignment of the plates (the array values) is the most similar for each channel, and that will help us recreate a color effect. That similarity can be determined using different metrics, like the L2 Norm or the NCC. For each image, I used one of my two alignment functions (naive / pyramid), which uses the SSD / NCC metric respectively, and for each of them, I cropped off 10% of the edges to give a cleaner appearance.
     </p>
   </section>
 
@@ -53,11 +53,11 @@
     <h2>Alignment Metrics</h2>
     <h3>Sum of Squared Differences (SSD / L2)</h3>
     <p>
-      For two equal‑sized image patches \(U, V\), the SSD score is
+      For two equal‑sized image patches \(A, B\), the SSD score is
       \[
-      \|x\|_2 \;=\; \sqrt{\sum_{i=1}^n x_i^2}
+      \|A-B\|_2 \;=\; \sqrt{\sum_{i=1}^n \sum_{j=1}^n (A_{ij} - B_{ij})^2}
     \]
-      Lower is better.
+      In my code, for the smaller JPG files, I found the alignment of the G and R plates (after normalizing them) that minimized the value of \[\sum_{i=1}^n \sum_{j=1}^n (A_{ij} - B_{ij})^2\]. Normalizing and squaring allows me to compare patterns over changes in brightness / intensity.
     </p>
     <h3>Normalized Cross‑Correlation (NCC)</h3>
     <p>
@@ -68,38 +68,37 @@
 \]
 </p>
     <p>
-      To avoid border artifacts (e.g., black/bright edges from mis‑registration or scanning), the scores are calculated from a cropped interior window.
+      This metric is takes the dot product of the two normalized vectors. This had minimal improvment for the smaller scales, but was significantly better for the larger scale images, so I used it on the .tif files. To avoid border artifacts (e.g., black/bright edges from mis‑registration or scanning), the scores are calculated from a cropped interior window.
     </p>
   </section>
 
   <section id="single-scale">
-    <h2>Single‑Scale (Exhaustive) Alignment on Low‑Res JPEGs</h2>
+    <h2>Naive Alignment on Low‑Res JPEGs</h2>
     <p>
       For each of the low‑resolution images, I searched integer shifts in a window ( \([-15, 15]\) pixels in both axes)
-      and selected the shift with the appropriate metric. Below are the results.
+      and using the SSD metric. Below are the results.
     </p>
 
     <div class="grid">
-      <!-- Replace the src paths with your outputs -->
       <figure>
         <img src="naive-cathedral.jpg" alt="Colorized Cathedral" class="thumb">
-        <figcaption>catsedral.jpg — metric: L2 Norm — shifts: G=<code>(2,-5)</code>, R=<code>(3,-12)</code></figcaption>
+        <figcaption>cathedral.jpg — shifts: G=<code>(2,-5)</code>, R=<code>(3,-12)</code></figcaption>
       </figure>
       <figure>
         <img src="naive-monastery.jpg" alt="Colorized Monastery" class="thumb">
-        <figcaption>monastery.jpg — metric: L2 Norm — shifts: G=<code>(2,3)</code>, R=<code>(2,-3)</code></figcaption>
+        <figcaption>monastery.jpg — shifts: G=<code>(2,3)</code>, R=<code>(2,-3)</code></figcaption>
       </figure>
       <figure>
         <img src="naive-tobolsk.jpg" alt="Colorized Tobolsk" class="thumb">
-        <figcaption>tobolsk.jpg — metric: L2 Norm — shifts: G=<code>(3,-3)</code>, R=<code>(3,-7)</code></figcaption>
+        <figcaption>tobolsk.jpg — shifts: G=<code>(3,-3)</code>, R=<code>(3,-7)</code></figcaption>
       </figure>
     </div>
   </section>
 
   <section id="pyramid">
-    <h2>Multi‑Scale (Image Pyramid) Alignment on All Images</h2>
+    <h2>Pyramid Alignment on High-Res Images</h2>
     <p>
-      Exhaustive search on high‑resolution plates is slow. I used a 5‑level coarse‑to‑fine pyramid:
+      The naive alignment search on high‑resolution plates is slow and also not always sufficient (the 15 x 15 window is too small, and increasing it is very costly, time-wise). I used a 5‑level coarse‑to‑fine pyramid:
     </p>
     <ol>
       <li>Downsample \(B,G,R\) repeatedly by 2 to build levels \(\ell=4\ldots0\) (4=coarsest).</li>
@@ -108,54 +107,75 @@
       <li>Repeat until full resolution.</li>
     </ol>
 
-    <h3>Offsets</h3>
-    <p>All reported offsets are in \((dx, dy)\) pixels, where positive \(dx\) = right, positive \(dy\) = down.</p>
-    <table>
-      <thead><tr><th>Image</th><th>Metric</th><th>G offset (dx, dy)</th><th>R offset (dx, dy)</th></tr></thead>
-      <tbody>
-        <tr><td>cathedral.jpg</td><td>L2 Norm</td><td>(2, -5)</td><td>(3, -12)</td></tr>
-        <tr><td>monastery.jpg</td><td>L2 Norm</td><td>(2, 3)</td><td>(2, -3)</td></tr>
-        <tr><td>tobolsk.jpg</td><td>L2 Norm</td><td>(3, -3)</td><td>(3, -7)</td></tr>
-        <tr><td>church.tif</td><td>NCC</td><td>(4, -25)</td><td>(-4, -58)</td></tr>
-        <tr><td>emir.tif</td><td>NCC</td><td>(24, -49)</td><td>(-256, -94)</td></tr>
-        <tr><td>harvesters.tif</td><td>NCC</td><td>(17, 60)</td><td>(13, -124)</td></tr>
-        <tr><td>icon.tif</td><td>NCC</td><td>(17, -41)</td><td>(23, -89)</td></tr>
-        <tr><td>italil.tif</td><td>NCC</td><td>(21, -38)</td><td>(35, -77)</td></tr>
-        <tr><td>lastochikino.tif</td><td>NCC</td><td>(-2, 3)</td><td>(-9, -75)</td></tr>
-        <tr><td>lugano.tif</td><td>NCC</td><td>(-16, -41)</td><td>(-29, -93)</td></tr>
-        <tr><td>melons.tif</td><td>NCC</td><td>(11, -82)</td><td>(13, -178)</td></tr>
-        <tr><td>self_portrait.tif</td><td>NCC</td><td>(29, -79)</td><td>(37, -176)</td></tr>
-        <tr><td>siren.tif</td><td>NCC</td><td>(-6, -49)</td><td>(-25, -96)</td></tr>
-        <tr><td>three_generations.tif</td><td>NCC</td><td>(14, -53)</td><td>(11, -112)</td></tr>
-        <tr><td>pg1.tif</td><td>NCC</td><td>(28, -60)</td><td>(35, -126)</td></tr>
-        <tr><td>pg2.tif</td><td>NCC</td><td>(12, -57)</td><td>(24, -126)</td></tr>
-        <tr><td>pg3.tif</td><td>NCC</td><td>(2, -12)</td><td>(2, -74)</td></tr>
-      </tbody>
-    </table>
-
-    <h3>Gallery</h3>
-    <div class="grid">
-      <!-- Replace with pyramid outputs -->
-      <figure><img src="pyramid-church.jpg" class="thumb" alt="church pyramid"><figcaption>church — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-emir.jpg" class="thumb" alt="emir pyramid"><figcaption>emir — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-harvesters.jpg" class="thumb" alt="harvesters pyramid"><figcaption>harvesters — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-icon.jpg" class="thumb" alt="icon pyramid"><figcaption>church — icon + NCC</figcaption></figure>
-      <figure><img src="pyramid-italil.jpg" class="thumb" alt="italil pyramid"><figcaption>onionitalil_church — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-lastochikino.jpg" class="thumb" alt="lastochikino pyramid"><figcaption>lastochikino — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-lugano.jpg" class="thumb" alt="lugano pyramid"><figcaption>lugano — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-melons.jpg" class="thumb" alt="melons pyramid"><figcaption>melons — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-self_portrait.jpg" class="thumb" alt="self_portrait pyramid"><figcaption>self_portrait — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-siren.jpg" class="thumb" alt="siren pyramid"><figcaption>siren — pyramid + NCC</figcaption></figure>
-      <figure><img src="pyramid-three_generations.jpg" class="thumb" alt="three_generations pyramid"><figcaption>three_generations — pyramid + NCC</figcaption></figure>
+	<h3>Difficulties</h3>
+	<div class="grid">
+      <figure>
+        <img src="failed-pyramid-emir.jpg" alt="Colorized Emir" class="thumb">
+        <figcaption>emir.tif — shifts: G=<code>(24,-49)</code>, R=<code>(-256,-94)</code></figcaption>
+      </figure>
     </div>
-  </section>
+	Originally, I was not able to align the emir photo correctly, namely the __ plate. 
+
+
+	<h3>Gallery</h3>
+	<div class="grid">
+      <figure>
+        <img src="pyramid-church.jpg" alt="Colorized Churc" class="thumb">
+        <figcaption>church.tif — shifts: G=<code>(4,-25)</code>, R=<code>(-4,-58)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-emir.jpg" alt="Colorized Emir" class="thumb">
+        <figcaption>emir.tif — shifts: G=<code>(24,-49)</code>, R=<code>(-256,-94)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-harvesters.jpg" alt="Colorized Harvesters" class="thumb">
+        <figcaption>harvesters.tif — shifts: G=<code>(17,60)</code>, R=<code>(13,-124)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-icon.jpg" alt="Colorized " class="thumb">
+        <figcaption>icon.tif — shifts: G=<code>(17,-41)</code>, R=<code>(23,-89)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-italil.jpg" alt="Colorized " class="thumb">
+        <figcaption>italil.tif — shifts: G=<code>(21,-38)</code>, R=<code>(35,-77)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-lastochikino.jpg" alt="Colorized " class="thumb">
+        <figcaption>lastochikino.tif — shifts: G=<code>(-2,3)</code>, R=<code>(-9,-75)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-lugano.jpg" alt="Colorized " class="thumb">
+        <figcaption>lugano.tif — shifts: G=<code>(-16,-41)</code>, R=<code>(-29,-93)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-melons.jpg" alt="Colorized " class="thumb">
+        <figcaption>melons.tif — shifts: G=<code>(11,-82)</code>, R=<code>(13,-178)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-self_portrait.jpg" alt="Colorized " class="thumb">
+        <figcaption>self_portrait.tif — shifts: G=<code>(29,-79)</code>, R=<code>(37,-176)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-siren.jpg" alt="Colorized " class="thumb">
+        <figcaption>siren.tif — shifts: G=<code>(-6,-49)</code>, R=<code>(-25,-96)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-three_generations.jpg" alt="Colorized " class="thumb">
+        <figcaption>three_generations.tif — shifts: G=<code>(14,-53)</code>, R=<code>(11,-112)</code></figcaption>
+      </figure>
+    </div>
 
   <section id="choices">
     <h2>Additional Images from the Collection</h2>
     <p>
-      I downloaded a few additional plates from the Prokudin‑Gorskii collection and ran the same pipeline.
-      Here are selected results (reporting NCC offsets).
+      I downloaded a few additional images from the Prokudin‑Gorskii collection that I thought were cool and ran the same pipeline.
+      Here are selected images and their colorized versions.
     </p>
+	 <div class="grid">
+      <figure><img src="pg1.jpg" class="thumb" alt="choice 1"><figcaption>Choice A</figcaption></figure>
+      <figure><img src="pg2.jpg" class="thumb" alt="choice 2"><figcaption>Choice B</figcaption></figure>
+      <figure><img src="pg3.jpg" class="thumb" alt="choice 3"><figcaption>Choice C</figcaption></figure>
+    </div>
     <div class="grid">
       <figure><img src="pyramid-pg1.jpg" class="thumb" alt="choice 1"><figcaption>Choice A — offsets: G=(28, -60), R=(35, -126)</figcaption></figure>
       <figure><img src="pyramid-pg2.jpg" class="thumb" alt="choice 2"><figcaption>Choice B — offsets: G=(12, -57), R=(24, -126)</figcaption></figure>
