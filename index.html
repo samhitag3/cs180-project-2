@@ -45,7 +45,7 @@
     <p>
       Let B, G, R be the three grayscale channels - which I got by splitting the original files into 3. We estimate integer displacements
       \((\Delta x_G, \Delta y_G)\) and \((\Delta x_R, \Delta y_R)\) that align \(G\) and \(R\) to \(B\).
-      The final color image is RGB color image. Conceptually, we want to find what alignment of the plates (the array values) is the most similar for each channel, and that will help us recreate a color effect. That similarity can be determined using different metrics, like the L2 Norm or the NCC. For each image, I used one of my two alignment functions (naive / pyramid), which uses the SSD / NCC metric respectively, and for each of them, I cropped off 10% of the edges to give a cleaner appearance.
+      The final color image is an RGB color image. Conceptually, we want to find what alignment of the plates (the array values) is the most similar for each channel, and that will help us recreate a color effect. That similarity can be determined using different metrics, like the L2 Norm or the NCC. For each image, I used one of my two alignment functions (naive / pyramid), which uses the SSD / NCC metric respectively, and for each of them, I cropped off 10% of the edges to give a cleaner appearance.
     </p>
   </section>
 
@@ -108,13 +108,19 @@
     </ol>
 
 	<h3>Difficulties</h3>
+	Originally, I was not able to align the emir photo correctly, namely the R plate (when I ran the algorithm for the G plate, it worked perfectly fine!).
+  As you can see, there's "ghost" artifact that's misasligned, I think mainly because of the complexity of the designs (a clear pattern couldn't be discerned).
+  Just to align the red portion of this image, I added a function to preprocess the array -- essentially blur / filter the plate using a Gaussian blur and Sobel filter (to simply the designs and highlight the edges), and that resolved the issue, and we can see the correct emir alignment after.
 	<div class="grid">
       <figure>
         <img src="failed-pyramid-emir.jpg" alt="Colorized Emir" class="thumb">
-        <figcaption>emir.tif — shifts: G=<code>(24,-49)</code>, R=<code>(-256,-94)</code></figcaption>
+        <figcaption>emir.tif — (incorrect) shifts: G=<code>(24,-49)</code>, R=<code>(-256,-94)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="pyramid-emir.jpg" alt="Colorized Emir" class="thumb">
+        <figcaption>emir.tif — shifts: G=<code>(24,-49)</code>, R=<code>(40,-107)</code></figcaption>
       </figure>
     </div>
-	Originally, I was not able to align the emir photo correctly, namely the __ plate. 
 
 
 	<h3>Gallery</h3>
