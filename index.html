@@ -1,67 +1,168 @@
-<html>
-	<head>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-		<style>
-			h1 {
-				text-align: center;
-			}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS180 Project 1 — Colorizing the Prokudin-Gorskii Photos</title>
+  <!-- MathJax for formulas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; line-height: 1.55; }
+    header, main, footer { max-width: 980px; margin: 0 auto; padding: 24px 16px; }
+    header h1 { margin: 0 0 8px; }
+    h2 { margin-top: 40px; }
+    figure { margin: 16px 0; text-align: center; }
+    figcaption { font-size: 0.9rem; opacity: 0.8; }
+    code, pre { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .thumb { width: 100%; height: auto; }
+    .small { max-width: 680px; margin: 0 auto; }
+    .note { background: #fffbe6; border: 1px solid #ffe58f; padding: 10px 12px; border-radius: 6px; }
+    .muted { opacity: 0.8; }
+  </style>
+</head>
+<body>
 
-			.container {
-				margin: 0 auto;
-				padding: 60px 20%;
-			}
+<header>
+  <h1>Project 1: Colorizing the Prokudin‑Gorskii Photos</h1>
+  <p class="muted">Course: CS180 • Author: <em>Samhita Ghosh</em> • Date: Fall 2025</p>
+</header>
 
-			figure {
-				text-align: center;
-			}
+<main>
+  <section id="intro">
+    <h2>Overview</h2>
+    <p>
+      This project
+      reconstructs color by splitting the plate into the three channels, aligning G and R to B with pure translations,
+      and stacking them into an RGB image.
+    </p>
+  </section>
 
-			img {
-				display: inline-block;
-			}
+  <section id="data">
+    <h2>Image Representation</h2>
+    <p>
+      Let \(B, G, R) be the three grayscale channels. We estimate integer displacements
+      \((\Delta x_G, \Delta y_G)\) and \((\Delta x_R, \Delta y_R)\) that align \(G\) and \(R\) to \(B\).
+      The final color image is RGB color image. Conceptually, we want to find what alignment of the plates (the array values) is the most similar for each channel, and that will help us recreate a color effect. That similarity can be determined using different metrics, like the L2 Norm or the NCC.
+    </p>
+  </section>
 
-			body {
-				font-family: 'Inter', sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-		<h1>CS180 Fall 2025 Project 0</h1>
-		<br>
+  <section id="metrics">
+    <h2>Alignment Metrics</h2>
+    <h3>Sum of Squared Differences (SSD / L2)</h3>
+    <p>
+      For two equal‑sized image patches \(U, V\), the SSD score is
+      \[
+      \|x\|_2 \;=\; \sqrt{\sum_{i=1}^n x_i^2}
+    \]
+      Lower is better.
+    </p>
+    <h3>Normalized Cross‑Correlation (NCC)</h3>
+    <p>
+\[
+\operatorname{NCC}(x,y)
+= \frac{(x-\bar x)\cdot(y-\bar y)}
+       {\|x-\bar x\|\,\|y-\bar y\|}
+\]
+</p>
+    <p>
+      To avoid border artifacts (e.g., black/bright edges from mis‑registration or scanning), the scores are calculated from a cropped interior window.
+    </p>
+  </section>
 
-        <h2>Part 1</h2>
-		<figure>
-			<img src="part1-close.JPG" alt="Part 1: close up image" style="width:50%"/>
-		</figure>
-		<figure>
-			<img src="part1-far.JPG" alt="Part 1: far away image" style="width:50%"/>
-		</figure>
+  <section id="single-scale">
+    <h2>Single‑Scale (Exhaustive) Alignment on Low‑Res JPEGs</h2>
+    <p>
+      For each of the low‑resolution images, I searched integer shifts in a window ( \([-15, 15]\) pixels in both axes)
+      and selected the shift with the appropriate metric. Below are the results.
+    </p>
 
-		<h2>Part 2</h2>
-		<figure>
-			<img src="part2-close.jpg" alt="Part 2: close up image" style="width:50%"/>
-		</figure>
-		<figure>
-			<img src="part2-far.JPG" alt="Part 2: far away image" style="width:50%"/>
-		</figure>
+    <div class="grid">
+      <!-- Replace the src paths with your outputs -->
+      <figure>
+        <img src="naive-cathedral.jpg" alt="Colorized Cathedral" class="thumb">
+        <figcaption>catsedral.jpg — metric: L2 Norm — shifts: G=<code>(2,-5)</code>, R=<code>(3,-12)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="naive-monastery.jpg" alt="Colorized Monastery" class="thumb">
+        <figcaption>monastery.jpg — metric: L2 Norm — shifts: G=<code>(2,3)</code>, R=<code>(2,-3)</code></figcaption>
+      </figure>
+      <figure>
+        <img src="naive-tobolsk.jpg" alt="Colorized Tobolsk" class="thumb">
+        <figcaption>tobolsk.jpg — metric: L2 Norm — shifts: G=<code>(3,-3)</code>, R=<code>(3,-7)</code></figcaption>
+      </figure>
+    </div>
+  </section>
 
-		<h2>Part 3</h2>
+  <section id="pyramid">
+    <h2>Multi‑Scale (Image Pyramid) Alignment on All Images</h2>
+    <p>
+      Exhaustive search on high‑resolution plates is slow. I used a 5‑level coarse‑to‑fine pyramid:
+    </p>
+    <ol>
+      <li>Downsample \(B,G,R\) repeatedly by 2 to build levels \(\ell=4\ldots0\) (4=coarsest).</li>
+      <li>At the coarsest level, run a broad search (e.g., \([-15, 15]\)).</li>
+      <li>Propagate the best shift to the next finer level (multiply by 2) and refine with a tiny local search (e.g., \([-2,2]\)).</li>
+      <li>Repeat until full resolution.</li>
+    </ol>
 
-		<figure>
-			<img src="dolly.gif" alt="Part 2: dolly zoom GIF" style="width:50%"/>
-		</figure>
+    <h3>Offsets</h3>
+    <p>All reported offsets are in \((dx, dy)\) pixels, where positive \(dx\) = right, positive \(dy\) = down.</p>
+    <table>
+      <thead><tr><th>Image</th><th>Metric</th><th>G offset (dx, dy)</th><th>R offset (dx, dy)</th></tr></thead>
+      <tbody>
+        <tr><td>cathedral.jpg</td><td>L2 Norm</td><td>(2, -5)</td><td>(3, -12)</td></tr>
+        <tr><td>monastery.jpg</td><td>L2 Norm</td><td>(2, 3)</td><td>(2, -3)</td></tr>
+        <tr><td>tobolsk.jpg</td><td>L2 Norm</td><td>(3, -3)</td><td>(3, -7)</td></tr>
+        <tr><td>church.tif</td><td>NCC</td><td>(4, -25)</td><td>(-4, -58)</td></tr>
+        <tr><td>emir.tif</td><td>NCC</td><td>(24, -49)</td><td>(-256, -94)</td></tr>
+        <tr><td>harvesters.tif</td><td>NCC</td><td>(17, 60)</td><td>(13, -124)</td></tr>
+        <tr><td>icon.tif</td><td>NCC</td><td>(17, -41)</td><td>(23, -89)</td></tr>
+        <tr><td>italil.tif</td><td>NCC</td><td>(21, -38)</td><td>(35, -77)</td></tr>
+        <tr><td>lastochikino.tif</td><td>NCC</td><td>(-2, 3)</td><td>(-9, -75)</td></tr>
+        <tr><td>lugano.tif</td><td>NCC</td><td>(-16, -41)</td><td>(-29, -93)</td></tr>
+        <tr><td>melons.tif</td><td>NCC</td><td>(11, -82)</td><td>(13, -178)</td></tr>
+        <tr><td>self_portrait.tif</td><td>NCC</td><td>(29, -79)</td><td>(37, -176)</td></tr>
+        <tr><td>siren.tif</td><td>NCC</td><td>(-6, -49)</td><td>(-25, -96)</td></tr>
+        <tr><td>three_generations.tif</td><td>NCC</td><td>(14, -53)</td><td>(11, -112)</td></tr>
+        <tr><td>pg1.tif</td><td>NCC</td><td>(28, -60)</td><td>(35, -126)</td></tr>
+        <tr><td>pg2.tif</td><td>NCC</td><td>(12, -57)</td><td>(24, -126)</td></tr>
+        <tr><td>pg3.tif</td><td>NCC</td><td>(2, -12)</td><td>(2, -74)</td></tr>
+      </tbody>
+    </table>
 
-		<p></p>
-		<figure style="width:100%; margin:0;">
-            <video style="width: 50%; height: auto;" autoplay muted>
-                <source src="dolly-vid.MOV" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <figcaption style="text-align:center; font-size:0.9em; color:#555;">
-                <p>I also did the dolly zoom using a video, since I felt like my GIF didn't look too convincing.</p>
-            </figcaption>
-        </figure>
-		</div>
-	</body>
+    <h3>Gallery</h3>
+    <div class="grid">
+      <!-- Replace with pyramid outputs -->
+      <figure><img src="pyramid-church.jpg" class="thumb" alt="church pyramid"><figcaption>church — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-emir.jpg" class="thumb" alt="emir pyramid"><figcaption>emir — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-harvesters.jpg" class="thumb" alt="harvesters pyramid"><figcaption>harvesters — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-icon.jpg" class="thumb" alt="icon pyramid"><figcaption>church — icon + NCC</figcaption></figure>
+      <figure><img src="pyramid-italil.jpg" class="thumb" alt="italil pyramid"><figcaption>onionitalil_church — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-lastochikino.jpg" class="thumb" alt="lastochikino pyramid"><figcaption>lastochikino — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-lugano.jpg" class="thumb" alt="lugano pyramid"><figcaption>lugano — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-melons.jpg" class="thumb" alt="melons pyramid"><figcaption>melons — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-self_portrait.jpg" class="thumb" alt="self_portrait pyramid"><figcaption>self_portrait — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-siren.jpg" class="thumb" alt="siren pyramid"><figcaption>siren — pyramid + NCC</figcaption></figure>
+      <figure><img src="pyramid-three_generations.jpg" class="thumb" alt="three_generations pyramid"><figcaption>three_generations — pyramid + NCC</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="choices">
+    <h2>Additional Images from the Collection</h2>
+    <p>
+      I downloaded a few additional plates from the Prokudin‑Gorskii collection and ran the same pipeline.
+      Here are selected results (reporting NCC offsets).
+    </p>
+    <div class="grid">
+      <figure><img src="pyramid-pg1.jpg" class="thumb" alt="choice 1"><figcaption>Choice A — offsets: G=(28, -60), R=(35, -126)</figcaption></figure>
+      <figure><img src="pyramid-pg2.jpg" class="thumb" alt="choice 2"><figcaption>Choice B — offsets: G=(12, -57), R=(24, -126)</figcaption></figure>
+      <figure><img src="pyramid-pg3.jpg" class="thumb" alt="choice 3"><figcaption>Choice C — offsets: G=(2, -12), R=(2, -74)</figcaption></figure>
+    </div>
+  </section>
+
+</main>
+</body>
 </html>
