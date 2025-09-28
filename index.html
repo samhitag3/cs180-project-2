@@ -26,19 +26,44 @@
 <body>
 
 <header>
-  <h1>Project 1: Colorizing the Prokudin‑Gorskii Photos</h1>
+  <h1>Project 2: Fun with Filters and Frequences!</h1>
   <p class="muted">Course: CS180 • <em>Samhita Ghosh</em> • Fall 2025</p>
 </header>
 
 <main>
-  <section id="intro">
-    <h2>Overview</h2>
-    <p>
-      This project
-      reconstructs color by splitting the plate into the three channels, aligning G and R to B with pure translations,
-      and stacking them into an RGB image.
-    </p>
-  </section>
+  <h2>Part 1: Fun Filters</h2>
+  <h3>Part 1.1: Convolutions from Scratch!</h3>
+  <p>In this section I defined the initial kernels I worked with as well as the convolve functions that use either 4 loops or 2 loops to run a convolution on one color channel / greyscale form of an image.</p>
+
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/me.jpg" alt="original picture of myself" width="400px">
+           <figcaption>original picture of myself</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/me-greyscale-11.jpg" alt="greyscale picture of myself" width="400px">
+           <figcaption>greyscale picture of myself</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <img src="images/me-box-11.jpg" alt="greyscale picture of myself convolved with 9x9 box filter" width="400px">
+          <figcaption>greyscale picture convolved with \( 9 \times 9 \) box filter</figcaption>
+        </td>
+        <td>
+          <img src="images/me-Dx-11.jpg" alt="greyscale picture of myself convolved with finite difference operator Dx" width="400px">
+          <figcaption>greyscale picture convolved with \( D_x \)</figcaption>
+        </td>
+        <td>
+          <img src="images/me-Dy-11.jpg" alt="greyscale picture of myself convolved with finite difference operator Dy" width="400px">
+          <figcaption>greyscale picture convolved with \( D_y \)</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
 
   <section id="data">
     <h2>Image Representation</h2>
