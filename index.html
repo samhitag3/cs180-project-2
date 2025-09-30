@@ -53,7 +53,7 @@
     </table>
   </div>
 
-  <p></p>
+  <p>As shown above, my convolve functions are significantly slower than the built-in <code>scipy.signal.convolve2d</code> functions, but we can clearly see that the function is accurate. In my implementation, I added padding with 0s based on the kernel size, so that the output matrix is the same size as the input matrix. </p>
 
   <div style="display: flex; flex-direction: column; align-items: center;">
     <table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -95,14 +95,14 @@
   <p>In this section, I worked with the cameraman image, and was able make the edges stand out by binarizing the convolved image after testing multiple threshold values.</p>
   <p>First, I convolved the image with the finite difference operators \( D_x \) and \( D_y \) to get \( G_x \) and \( G_y \) respectively, and then I computed the gradient magnitude image, which I got by calculating:
     \[ \sqrt{G_x^2 + G_y^2} \]
-  Then, after calculating the gradient magnitude image, I experimented with different thresholds, and eventually settled on 0.1 to create a binarized version of the image.
+  Then, after calculating the gradient magnitude image, I experimented with different thresholds, and eventually settled on 0.1 to create a binarized version of the image, which allowed me to bold the edges while still eliminating most of the noise in the image.
   </p>
 
   <div style="display: flex; flex-direction: column; align-items: center;">
     <table style="width: 100%; text-align: center; border-collapse: collapse;">
       <tr>
         <td style="text-align: center;">
-           <img src="images/cameraman.png" alt="original picture of camerman" width="400px">
+           <img src="images/cameraman.png" alt="original image of camerman" width="400px">
            <figcaption>original image of cameraman</figcaption>
         </td>
       </tr>
@@ -191,7 +191,7 @@
     \[ I_{\mathrm{sharp}} = I + \alpha H \]
   </p>
   <p>For this entire section, I used a Gaussian kernel with <code>(ksize = 9, sigma = 1)</code>.</p>
-  <p>In order to sharpen the Taj Mahal image, I used \( \alpha = 2 \) to make the sharpened effect stand out. </p>
+  <p>We can see below how different alpha values can vary the sharpening effect.</p>
   
   <div style="display: flex; flex-direction: column; align-items: center;">
     <table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -201,25 +201,44 @@
            <figcaption>original image of the Taj Mahaj</figcaption>
         </td>
         <td style="text-align: center;">
-           <img src="images/taj-sharpened-21.jpg" alt="sharpened image of the Taj Mahaj" width="400px">
-           <figcaption>sharpened image of the Taj Mahaj</figcaption>
+           <img src="images/taj-high-21.jpg" alt="high frequencies of the Taj Mahaj image" width="400px">
+           <figcaption>high frequencies of the Taj Mahaj image</figcaption>
         </td>
       </tr>
-    </table>
-  </div>
-
-  <p>As indicated in the spec, I blurred my own image with a Gaussian kernel, and then tried sharpening that image for comparison (with \( \alpha = 3 \) for the Big Sur image). </p>
-  <div style="display: flex; flex-direction: column; align-items: center;">
-    <table style="width: 100%; text-align: center; border-collapse: collapse;">
       <tr>
         <td style="text-align: center;">
-           <img src="images/blurred-big-sur-21.jpg" alt="blurred image of Big Sur (using Gaussian)" width="400px">
-           <figcaption>blurred image of Big Sur (using Gaussian)</figcaption>
+           <img src="images/taj-blurred-21.jpg" alt="original image of the Taj Mahaj" width="400px">
+           <figcaption>blurred image of the Taj Mahaj</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/taj-1-sharpened-21.jpg" alt="sharpened image of the Taj Mahaj, alpha = 1" width="400px">
+           <figcaption>sharpened image of the Taj Mahaj, \( \alpha = 1 \)</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/taj-2-sharpened-21.jpg" alt="sharpened image of the Taj Mahaj, alpha = 2" width="400px">
+           <figcaption>sharpened image of the Taj Mahaj, \( \alpha = 2 \)</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/taj-3-sharpened-21.jpg" alt="sharpened image of the Taj Mahaj, alpha = 3" width="400px">
+           <figcaption>sharpened image of the Taj Mahaj, \( \alpha = 3 \)</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/taj-5-sharpened-21.jpg" alt="sharpened image of the Taj Mahaj, alpha = 5" width="400px">
+           <figcaption>sharpened image of the Taj Mahaj, \( \alpha = 5 \)</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/taj-10-sharpened-21.jpg" alt="sharpened image of the Taj Mahaj, alpha = 10" width="400px">
+           <figcaption>sharpened image of the Taj Mahaj, \( \alpha = 10 \)</figcaption>
         </td>
       </tr>
     </table>
   </div>
 
+  <p>As indicated in the spec, I blurred my own image with a Gaussian kernel, and then tried sharpening that.</p>
   <div style="display: flex; flex-direction: column; align-items: center;">
     <table style="width: 100%; text-align: center; border-collapse: collapse;">
       <tr>
@@ -228,8 +247,363 @@
            <figcaption>original image of Big Sur</figcaption>
         </td>
         <td style="text-align: center;">
-           <img src="images/big-sur-sharpened-21.jpg" alt="sharpened image of Big Sur" width="400px">
-           <figcaption>sharpened image of Big Sur</figcaption>
+           <img src="images/big-sur-high-21.jpg" alt="high frequencies of the Big Sur image" width="400px">
+           <figcaption>high frequencies of the Big Sur image</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/blurred-big-sur-21.jpg" alt="blurred image of Big Sur (using Gaussian)" width="400px">
+           <figcaption>blurred image of Big Sur (using Gaussian)</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/big-sur-1-sharpened-21.jpg" alt="sharpened image of Big Sur, alpha = 1" width="400px">
+           <figcaption>sharpened image of Big Sur, \( \alpha = 1 \)</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/big-sur-2-sharpened-21.jpg" alt="sharpened image of Big Sur, alpha = 2" width="400px">
+           <figcaption>sharpened image of Big Sur, \( \alpha = 2 \)</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/big-sur-3-sharpened-21.jpg" alt="sharpened image of Big Sur, alpha = 3" width="400px">
+           <figcaption>sharpened image of Big Sur, \( \alpha = 3 \)</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/big-sur-5-sharpened-21.jpg" alt="sharpened image of Big Sur, alpha = 5" width="400px">
+           <figcaption>sharpened image of Big Sur, \( \alpha = 5 \)</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/big-sur-10-sharpened-21.jpg" alt="sharpened image of Big Sur, alpha = 10" width="400px">
+           <figcaption>sharpened image of Big Sur, \( \alpha = 10 \)</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>Part 2.2: Hybrid Images</h3>
+  <p>In this section, I used a Gaussian again to create a low-pass filter for one image, and used the same low-pass filter to get the high frequencies for another image. By averaging the pixel values for the low-frequency and the high-frequency images, I was able to create hybrid images that appear one way close up and another way from far away.</p>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/aligned_nutmeg.jpg" alt="aligned image of Nutmeg" width="400px">
+           <figcaption>aligned image of Nutmeg</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/aligned_DerekPicture.jpg" alt="aligned image of Derek" width="400px">
+           <figcaption>aligned image of Derek</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/dermeg-22.png" alt="hybrid image Dermeg" width="400px">
+           <figcaption>hybrid image Dermeg, <code>(ksize = 51, sigma = 6)</code>, \( \alpha = 2 \)</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/aligned_michael-scott.jpg" alt="aligned image of Michael Scott" width="400px">
+           <figcaption>aligned image of Michael Scott</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/aligned_dwight-schrute.jpg" alt="aligned image of Dwight Schrute" width="400px">
+           <figcaption>aligned image of Dwight Schrute</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/dundler-22.png" alt="hybrid image Dundler" width="400px">
+           <figcaption>hybrid image Dundler, <code>(ksize = 51, sigma = 2)</code>, \( \alpha = 3 \)</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/pikachu.jpg" alt="original image of Pikachu" width="400px">
+           <figcaption>original image of Pikachu</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/totoro.jpg" alt="original image of Totoro" width="400px">
+           <figcaption>original image of Totoro</figcaption>
+        </td>
+      </tr>
+       <tr>
+        <td style="text-align: center;">
+           <img src="images/aligned_pikachu.jpg" alt="aligned image of Pikachu" width="400px">
+           <figcaption>aligned image of Pikachu</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/aligned_totoro.jpg" alt="aligned image of Totoro" width="400px">
+           <figcaption>aligned image of Totoro</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/fft_pikachu-22.png" alt="Fourier transforms of aligned image of Pikachu" width="400px">
+           <figcaption>Fourier transforms of aligned image of Pikachu</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/fft_totoro-22.png" alt="Fourier transforms of aligned image of Totoro" width="400px">
+           <figcaption>Fourier transforms of aligned image of Totoro</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/high-pikachu-22.png" alt="high frequencies of Pikachu" width="400px">
+           <figcaption>high frequencies of Pikachu</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/low-totoro-22.png" alt="low frequencies of Totoro" width="400px">
+           <figcaption>low frequencies of Totoro</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/fft_high_pikachu-22.png" alt="Fourier transforms of high frequencies of Pikachu" width="400px">
+           <figcaption>Fourier transforms of high frequencies of Pikachu</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/fft_low_totoro-22.png" alt="Fourier transforms of low frequencies of Totoro" width="400px">
+           <figcaption>Fourier transforms of low frequencies of Totoro</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/pikaro-22.png" alt="hybrid image Pikaro" width="400px">
+           <figcaption>hybrid image Pikaro, <code>(ksize = 35, sigma = 6)</code>, \( \alpha = 3 \)</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/fft_pikaro-22.png" alt="Fourier transforms of Pikaro" width="400px">
+           <figcaption>Fourier transforms of Pikaro</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+  <p>In this section, I used Gaussian and Laplacian image stacks to blur images and visualize difference frequencies within images.</p>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-0-23.jpg" alt="apple - gaussian, level = 0" width="400px">
+           <figcaption>apple - gaussian, level = 0</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-0-23.jpg" alt="apple - laplacian, level = 0" width="400px">
+           <figcaption>apple - laplacian, level = 0</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-1-23.jpg" alt="apple - gaussian, level = 1" width="400px">
+           <figcaption>apple - gaussian, level = 1</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-1-23.jpg" alt="apple - laplacian, level = 1" width="400px">
+           <figcaption>apple - laplacian, level = 1</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-2-23.jpg" alt="apple - gaussian, level = 2" width="400px">
+           <figcaption>apple - gaussian, level = 2</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-2-23.jpg" alt="apple - laplacian, level = 2" width="400px">
+           <figcaption>apple - laplacian, level = 2</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-3-23.jpg" alt="apple - gaussian, level = 3" width="400px">
+           <figcaption>apple - gaussian, level = 3</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-3-23.jpg" alt="apple - laplacian, level = 3" width="400px">
+           <figcaption>apple - laplacian, level = 3</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-4-23.jpg" alt="apple - gaussian, level = 4" width="400px">
+           <figcaption>apple - gaussian, level = 4</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-4-23.jpg" alt="apple - laplacian, level = 4" width="400px">
+           <figcaption>apple - laplacian, level = 4</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-5-23.jpg" alt="apple - gaussian, level = 5" width="400px">
+           <figcaption>apple - gaussian, level = 5</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-5-23.jpg" alt="apple - laplacian, level = 5" width="400px">
+           <figcaption>apple - laplacian, level = 5</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-0-23.jpg" alt="apple - gaussian, level = 0" width="400px">
+           <figcaption>apple - gaussian, level = 0</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-0-23.jpg" alt="apple - laplacian, level = 0" width="400px">
+           <figcaption>apple - laplacian, level = 0</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-1-23.jpg" alt="apple - gaussian, level = 1" width="400px">
+           <figcaption>apple - gaussian, level = 1</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-1-23.jpg" alt="apple - laplacian, level = 1" width="400px">
+           <figcaption>apple - laplacian, level = 1</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-2-23.jpg" alt="apple - gaussian, level = 2" width="400px">
+           <figcaption>apple - gaussian, level = 2</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-2-23.jpg" alt="apple - laplacian, level = 2" width="400px">
+           <figcaption>apple - laplacian, level = 2</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-3-23.jpg" alt="apple - gaussian, level = 3" width="400px">
+           <figcaption>apple - gaussian, level = 3</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-3-23.jpg" alt="apple - laplacian, level = 3" width="400px">
+           <figcaption>apple - laplacian, level = 3</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-4-23.jpg" alt="apple - gaussian, level = 4" width="400px">
+           <figcaption>apple - gaussian, level = 4</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-4-23.jpg" alt="apple - laplacian, level = 4" width="400px">
+           <figcaption>apple - laplacian, level = 4</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/apple-gaussian-5-23.jpg" alt="apple - gaussian, level = 5" width="400px">
+           <figcaption>apple - gaussian, level = 5</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/apple-laplacian-5-23.jpg" alt="apple - laplacian, level = 5" width="400px">
+           <figcaption>apple - laplacian, level = 5</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/orange-gaussian-0-23.jpg" alt="orange - gaussian, level = 0" width="400px">
+           <figcaption>orange - gaussian, level = 0</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/orange-laplacian-0-23.jpg" alt="orange - laplacian, level = 0" width="400px">
+           <figcaption>orange - laplacian, level = 0</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/orange-gaussian-1-23.jpg" alt="orange - gaussian, level = 1" width="400px">
+           <figcaption>orange - gaussian, level = 1</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/orange-laplacian-1-23.jpg" alt="orange - laplacian, level = 1" width="400px">
+           <figcaption>orange - laplacian, level = 1</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/orange-gaussian-2-23.jpg" alt="orange - gaussian, level = 2" width="400px">
+           <figcaption>orange - gaussian, level = 2</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/orange-laplacian-2-23.jpg" alt="orange - laplacian, level = 2" width="400px">
+           <figcaption>orange - laplacian, level = 2</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/orange-gaussian-3-23.jpg" alt="orange - gaussian, level = 3" width="400px">
+           <figcaption>orange - gaussian, level = 3</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/orange-laplacian-3-23.jpg" alt="orange - laplacian, level = 3" width="400px">
+           <figcaption>orange - laplacian, level = 3</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/orange-gaussian-4-23.jpg" alt="orange - gaussian, level = 4" width="400px">
+           <figcaption>orange - gaussian, level = 4</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/orange-laplacian-4-23.jpg" alt="orange - laplacian, level = 4" width="400px">
+           <figcaption>orange - laplacian, level = 4</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/orange-gaussian-5-23.jpg" alt="orange - gaussian, level = 5" width="400px">
+           <figcaption>orange - gaussian, level = 5</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/orange-laplacian-5-23.jpg" alt="orange - laplacian, level = 5" width="400px">
+           <figcaption>orange - laplacian, level = 5</figcaption>
         </td>
       </tr>
     </table>
