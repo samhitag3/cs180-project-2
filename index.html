@@ -135,14 +135,14 @@
   </div>
 
   <h3>Part 1.3: Derivative of Gaussian (DoG) Filter</h3>
-  <p>In this section I detecting edges similar to how I did with the finite difference operator, but this time utilizing a Gaussian kernel. I first blurred the cameraman image with a Gaussian kernel (ksize = 9, sigma = 1), and then convolved the image with the finite differance operators (separately). I created the DoG filter by convolving the Gaussian kernel with the finite difference operators (separately).</p>
+  <p>In this section I detecting edges similar to how I did with the finite difference operator, but this time utilizing a Gaussian kernel. I first blurred the cameraman image with a Gaussian kernel <code>(ksize = 9, sigma = 1)</code>, and then convolved the image with the finite differance operators (separately). I created the DoG filter by convolving the Gaussian kernel with the finite difference operators (separately).</p>
   <p>The images convolved with the Gaussian and then the finite difference operator should look the same as the images convolved with the DoG filters, but I suspect they don't look the same because my convolve function adds zeros to pad the original array to return a convolved array the same size as the input.</p>
 
   <div style="display: flex; flex-direction: column; align-items: center;">
     <table style="width: 100%; text-align: center; border-collapse: collapse;">
       <tr>
         <td style="text-align: center;">
-           <img src="images/cameraman.png" alt="original picture of camerman" width="400px">
+           <img src="images/cameraman.png" alt="original image of camerman" width="400px">
            <figcaption>original image of cameraman</figcaption>
         </td>
         <td style="text-align: center;">
@@ -187,8 +187,54 @@
   <h3>Part 2.1: Image "Sharpening"</h3>
   <p>In this section, I used a Gaussian to create a low-pass filter, that when subtracted from the original image, will result in the high frequencies of the image. When adding those high frequencies back to the original image, I get a seemingly sharpened version of the original image. Assume that \( I \) is our original image, \( H \) is the high frequencies of the original image, \( G \) is a Gaussian kernel, and \( \alpha \) is a positive constant:
 
-\[ H = I - (I * G) \]
-\[ I_{\mathrm{sharp}} = I + \alpha H \]</p>
+    \[ H = I - (I * G) \]
+    \[ I_{\mathrm{sharp}} = I + \alpha H \]
+  </p>
+  <p>For this entire section, I used a Gaussian kernel with <code>(ksize = 9, sigma = 1)</code>.</p>
+  <p>In order to sharpen the Taj Mahal image, I used \( \alpha = 2 \) to make the sharpened effect stand out. </p>
+  
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/taj.jpg" alt="original image of the Taj Mahaj" width="400px">
+           <figcaption>original image of the Taj Mahaj</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/taj-sharpened-21.jpg" alt="sharpened image of the Taj Mahaj" width="400px">
+           <figcaption>sharpened image of the Taj Mahaj</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <p>As indicated in the spec, I blurred my own image with a Gaussian kernel, and then tried sharpening that image for comparison (with \( \alpha = 3 \) for the Big Sur image). </p>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/blurred-big-sur-21.jpg" alt="blurred image of Big Sur (using Gaussian)" width="400px">
+           <figcaption>blurred image of Big Sur (using Gaussian)</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/big-sur.jpg" alt="original image of Big Sur" width="400px">
+           <figcaption>original image of Big Sur</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/big-sur-sharpened-21.jpg" alt="sharpened image of Big Sur" width="400px">
+           <figcaption>sharpened image of Big Sur</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
 </main>
 </body>
 </html>
