@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CS180 Project 1</title>
+  <title>CS180 Project 2</title>
   <!-- MathJax for formulas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
   <style>
@@ -35,7 +35,6 @@
   <h3>Part 1.1: Convolutions from Scratch!</h3>
   <p>In this section I defined the initial kernels I worked with as well as the convolve functions that use either 4 loops or 2 loops to run a convolution on one color channel / greyscale form of an image.</p>
 
-
   <div style="display: flex; flex-direction: column; align-items: center;">
     <table style="width: 100%; text-align: center; border-collapse: collapse;">
       <tr>
@@ -65,154 +64,23 @@
     </table>
   </div>
 
-  <section id="data">
-    <h2>Image Representation</h2>
-    <p>
-      Let B, G, R be the three grayscale channels - which I got by splitting the original files into 3. We estimate integer displacements
-      \((\Delta x_G, \Delta y_G)\) and \((\Delta x_R, \Delta y_R)\) that align \(G\) and \(R\) to \(B\).
-      The final color image is an RGB color image. Conceptually, we want to find what alignment of the plates (the array values) is the most similar for each channel, and that will help us recreate a color effect. That similarity can be determined using different metrics, like the L2 Norm or the NCC. For each image, I used one of my two alignment functions (naive / pyramid), which uses the SSD / NCC metric respectively, and for each of them, I cropped off 10% of the edges to give a cleaner appearance.
-    </p>
-  </section>
-
-  <section id="metrics">
-    <h2>Alignment Metrics</h2>
-    <h3>Sum of Squared Differences (SSD / L2)</h3>
-    <p>
-      For two equal‑sized image patches \(A, B\), the SSD score is
-      \[
-      \|A-B\|_2 \;=\; \sqrt{\sum_{i=1}^n \sum_{j=1}^n (A_{ij} - B_{ij})^2}
-    \]
-      In my code, for the smaller JPG files, I found the alignment of the G and R plates (after normalizing them) that minimized the value of \[\sum_{i=1}^n \sum_{j=1}^n (A_{ij} - B_{ij})^2\]. Normalizing and squaring allows me to compare patterns over changes in brightness / intensity.
-    </p>
-    <h3>Normalized Cross‑Correlation (NCC)</h3>
-    <p>
-\[
-\operatorname{NCC}(x,y)
-= \frac{(x-\bar x)\cdot(y-\bar y)}
-       {\|x-\bar x\|\,\|y-\bar y\|}
-\]
-</p>
-    <p>
-      This metric is takes the dot product of the two normalized vectors. This had minimal improvment for the smaller scales, but was significantly better for the larger scale images, so I used it on the .tif files. To avoid border artifacts (e.g., black/bright edges from mis‑registration or scanning), the scores are calculated from a cropped interior window.
-    </p>
-  </section>
-
-  <section id="single-scale">
-    <h2>Naive Alignment on Low‑Res JPEGs</h2>
-    <p>
-      For each of the low‑resolution images, I searched integer shifts in a window ( \([-15, 15]\) pixels in both axes)
-      and using the SSD metric. Below are the results.
-    </p>
-
-    <div class="grid">
-      <figure>
-        <img src="naive-cathedral.jpg" alt="Colorized Cathedral" class="thumb">
-        <figcaption>cathedral.jpg — shifts: G=<code>(2,-5)</code>, R=<code>(3,-12)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="naive-monastery.jpg" alt="Colorized Monastery" class="thumb">
-        <figcaption>monastery.jpg — shifts: G=<code>(2,3)</code>, R=<code>(2,-3)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="naive-tobolsk.jpg" alt="Colorized Tobolsk" class="thumb">
-        <figcaption>tobolsk.jpg — shifts: G=<code>(3,-3)</code>, R=<code>(3,-7)</code></figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section id="pyramid">
-    <h2>Pyramid Alignment on High-Res Images</h2>
-    <p>
-      The naive alignment search on high‑resolution plates is slow and also not always sufficient (the 15 x 15 window is too small, and increasing it is very costly, time-wise). I used a 5‑level coarse‑to‑fine pyramid:
-    </p>
-    <ol>
-      <li>Downsample \(B,G,R\) repeatedly by 2 to build levels \(\ell=4\ldots0\) (4=coarsest).</li>
-      <li>At the coarsest level, run a broad search (e.g., \([-15, 15]\)).</li>
-      <li>Propagate the best shift to the next finer level (multiply by 2) and refine with a tiny local search (e.g., \([-2,2]\)).</li>
-      <li>Repeat until full resolution.</li>
-    </ol>
-
-	<h3>Difficulties</h3>
-	Originally, I was not able to align the emir photo correctly, namely the R plate (when I ran the algorithm for the G plate, it worked perfectly fine!).
-  As you can see, there's "ghost" artifact that's misasligned, I think mainly because of the complexity of the designs (a clear pattern couldn't be discerned).
-  Just to align the red portion of this image, I added a function to preprocess the array -- essentially blur / filter the plate using a Gaussian blur and Sobel filter (to simply the designs and highlight the edges), and that resolved the issue, and we can see the correct emir alignment after.
-	<div class="grid">
-      <figure>
-        <img src="failed-pyramid-emir.jpg" alt="Colorized Emir" class="thumb">
-        <figcaption>emir.tif — (incorrect) shifts: G=<code>(24,-49)</code>, R=<code>(-256,-94)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-emir.jpg" alt="Colorized Emir" class="thumb">
-        <figcaption>emir.tif — shifts: G=<code>(24,-49)</code>, R=<code>(40,-107)</code></figcaption>
-      </figure>
-    </div>
-
-
-	<h3>Gallery</h3>
-	<div class="grid">
-      <figure>
-        <img src="pyramid-church.jpg" alt="Colorized Churc" class="thumb">
-        <figcaption>church.tif — shifts: G=<code>(4,-25)</code>, R=<code>(-4,-58)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-emir.jpg" alt="Colorized Emir" class="thumb">
-        <figcaption>emir.tif — shifts: G=<code>(24,-49)</code>, R=<code>(-256,-94)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-harvesters.jpg" alt="Colorized Harvesters" class="thumb">
-        <figcaption>harvesters.tif — shifts: G=<code>(17,60)</code>, R=<code>(13,-124)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-icon.jpg" alt="Colorized " class="thumb">
-        <figcaption>icon.tif — shifts: G=<code>(17,-41)</code>, R=<code>(23,-89)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-italil.jpg" alt="Colorized " class="thumb">
-        <figcaption>italil.tif — shifts: G=<code>(21,-38)</code>, R=<code>(35,-77)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-lastochikino.jpg" alt="Colorized " class="thumb">
-        <figcaption>lastochikino.tif — shifts: G=<code>(-2,3)</code>, R=<code>(-9,-75)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-lugano.jpg" alt="Colorized " class="thumb">
-        <figcaption>lugano.tif — shifts: G=<code>(-16,-41)</code>, R=<code>(-29,-93)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-melons.jpg" alt="Colorized " class="thumb">
-        <figcaption>melons.tif — shifts: G=<code>(11,-82)</code>, R=<code>(13,-178)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-self_portrait.jpg" alt="Colorized " class="thumb">
-        <figcaption>self_portrait.tif — shifts: G=<code>(29,-79)</code>, R=<code>(37,-176)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-siren.jpg" alt="Colorized " class="thumb">
-        <figcaption>siren.tif — shifts: G=<code>(-6,-49)</code>, R=<code>(-25,-96)</code></figcaption>
-      </figure>
-      <figure>
-        <img src="pyramid-three_generations.jpg" alt="Colorized " class="thumb">
-        <figcaption>three_generations.tif — shifts: G=<code>(14,-53)</code>, R=<code>(11,-112)</code></figcaption>
-      </figure>
-    </div>
-
-  <section id="choices">
-    <h2>Additional Images from the Collection</h2>
-    <p>
-      I downloaded a few additional images from the Prokudin‑Gorskii collection that I thought were cool and ran the same pipeline.
-      Here are selected images and their colorized versions.
-    </p>
-	 <div class="grid">
-      <figure><img src="pg1.jpg" class="thumb" alt="choice 1"><figcaption>Choice A</figcaption></figure>
-      <figure><img src="pg2.jpg" class="thumb" alt="choice 2"><figcaption>Choice B</figcaption></figure>
-      <figure><img src="pg3.jpg" class="thumb" alt="choice 3"><figcaption>Choice C</figcaption></figure>
-    </div>
-    <div class="grid">
-      <figure><img src="pyramid-pg1.jpg" class="thumb" alt="choice 1"><figcaption>Choice A — offsets: G=(28, -60), R=(35, -126)</figcaption></figure>
-      <figure><img src="pyramid-pg2.jpg" class="thumb" alt="choice 2"><figcaption>Choice B — offsets: G=(12, -57), R=(24, -126)</figcaption></figure>
-      <figure><img src="pyramid-pg3.jpg" class="thumb" alt="choice 3"><figcaption>Choice C — offsets: G=(2, -12), R=(2, -74)</figcaption></figure>
-    </div>
-  </section>
+  <h3>Part 1.1: Finite Difference Operator</h3>
+  <p>In this section I worked with the cameraman image, and was able make the edges stand out by binarizing the convolved image after testing multiple threshold values.</p>
+  
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td style="text-align: center;">
+           <img src="images/me.jpg" alt="original picture of myself" width="400px">
+           <figcaption>original picture of myself</figcaption>
+        </td>
+        <td style="text-align: center;">
+           <img src="images/me-greyscale-11.jpg" alt="greyscale picture of myself" width="400px">
+           <figcaption>greyscale picture of myself</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
 
 </main>
 </body>
